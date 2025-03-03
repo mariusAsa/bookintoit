@@ -3,9 +3,13 @@
 declare global {
 	namespace App {
         interface Platform {
-            env: Env
-            cf: CfProperties
-            ctx: ExecutionContext
+            env: {
+                COUNTER: DurableObjectNamespace;
+            };
+            context: {
+                waitUntil(promise: Promise<any>): void;
+            };
+            caches: CacheStorage & { default: Cache }
         }
     }
 }
