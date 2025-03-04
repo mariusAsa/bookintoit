@@ -4,6 +4,7 @@ import sharp from "sharp";
 import { fail, message, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 import { z } from "zod";
+import { GEMINI_API } from '$env/static/private';
 
 const schema = z.object({
 	fileToUpload: z.any(),
@@ -32,7 +33,7 @@ async function imageToBase64(image: Buffer) {
 }
 
 async function getBooks(file: File) {
-	const genAI = new GoogleGenerativeAI("temp");
+	const genAI = new GoogleGenerativeAI(GEMINI_API);
 
 	const model = genAI.getGenerativeModel({
 		model: "gemini-2.0-flash",

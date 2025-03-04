@@ -36,6 +36,7 @@
 		"@chewhx/google-books": "^4.0.1",
 		"@google/generative-ai": "^0.23.0",
 		"@types/node": "^22.13.9",
+		"melt": "^0.17.0",
 		"sharp": "^0.33.5"
 	}
 }

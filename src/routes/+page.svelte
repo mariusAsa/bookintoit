@@ -6,8 +6,6 @@
     };
 </script>
 <script lang="ts">
-    import BookGrid from "$lib/book/BookGrid.svelte";
-    import Spinner from "$lib/icons/Spinner.svelte";
     import { superForm } from "sveltekit-superforms";
     let { data } = $props();
     const { message, enhance, delayed } = superForm(data.form, {
@@ -45,7 +43,7 @@
         });
     }
 </script>
-    
+
 <div class="h-full w-full relative justify-center flex">
     <form 
         method="POST" 
@@ -76,9 +74,6 @@
     </form>
     {#if $delayed}
         <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            <Spinner />
         </div>
     {/if}
 </div>
-
-<BookGrid {books} {displayBoundingBox}/>
