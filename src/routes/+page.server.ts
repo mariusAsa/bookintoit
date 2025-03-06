@@ -24,28 +24,23 @@ async function imageToBase64(image: Buffer) {
 			withoutEnlargement: true,
 			fit: "inside",
 		})
-		.jpeg({
-			quality: 95,
-			chromaSubsampling: '4:4:4'
-		})
+		.jpeg({ mozjpeg: true })
 		.toBuffer();
 	return buff.toString("base64");
 }
-
-async function getBooks(file: File) {
-	const genAI = new GoogleGenerativeAI(GEMINI_API);
-
-	const model = genAI.getGenerativeModel({
-		model: "gemini-2.0-flash",
-		generationConfig: {
-			responseMimeType: "application/json",
-		},
-	});
-	const prompt = `You are a librarian, and it is your job to find and record all the books inside an image of a bookshelf. 
+const genAI = new GoogleGenerativeAI(GEMINI_API);
+const model = genAI.getGenerativeModel({
+	model: "gemini-2.0-flash-lite",
+	generationConfig: {
+		responseMimeType: "application/json",
+	},
+});
+const prompt = `You are a librarian, and it is your job to find and record all the books inside an image of a bookshelf. 
 	You must record your finding via a list made out of valid JSON objects. 
 	These JSON objects contain the book author, title, and where to find the book via a bounding box. 
 	The list should look as follows: [{author: "George Orwell", title: "1984", box: [ymin, xmin, ymax, xmax]}, ...]. 
-	If you can not figure out a value, set the value to null and if you do not see any books in the image, return an empty list [].`;
+	If you can not figure out the author or title, skip the book and if you do not see any books in the image, return an empty list [].`;
+async function getBooks(file: File) {
 	const image = Buffer.from(await file.arrayBuffer());
 	const imageParts = {
 		inlineData: {

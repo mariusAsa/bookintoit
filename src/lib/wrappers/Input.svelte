@@ -1,5 +1,5 @@
 <script lang="ts">
-    let { file } = $props();
+    let { file, selectedBook } = $props();
     let showDropZone = $state(true);
     let img: HTMLImageElement | undefined = $state(undefined);
     function handleFileChange(event: DragEvent | Event) {
@@ -18,6 +18,23 @@
         }
     }
     let input: HTMLInputElement | undefined = $state(undefined)
+
+    let div: HTMLDivElement | undefined = $state(undefined);
+    $effect(() => {
+        if (!selectedBook || !selectedBook.box || !img || !div) return;
+        const [x1, y1, x2, y2] = [
+            selectedBook.box[0] / 1000 * img.width, 
+            selectedBook.box[1] / 1000 * img.height, 
+            selectedBook.box[2] / 1000 * img.width, 
+            selectedBook.box[3] / 1000 * img.height
+        ];
+        Object.assign(div.style, {
+            right: `${x1}px`,
+            width: `${x2 - x1}px`,
+            top: `${y1}px`,
+            height: `${y2 - y1}px`,
+        });
+    })
 </script>
 
 <div class="w-1/3 m-auto mt-4">
@@ -34,8 +51,14 @@
             Upload an image here
         </div>
     {/if}
-    <!-- svelte-ignore event_directive_deprecated -->
-    <input
+
+    <div class="flex relative">
+        <img bind:this={img} src="" alt="" class="rounded-lg"/>
+        <div bind:this={div} class="absolute border border-green-400 z-10"></div>
+    </div>
+</div>
+<!-- svelte-ignore event_directive_deprecated -->
+<input
             bind:this={input}
             bind:files={$file}
             on:change={handleFileChange}
@@ -45,5 +68,3 @@
             required
             hidden
     />
-    <img bind:this={img} src="" alt="" class="rounded-lg"/>
-</div>
