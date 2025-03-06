@@ -1,6 +1,5 @@
 import { Buffer } from 'node:buffer';
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import sharp from "sharp";
 import { fail, message, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 import { GEMINI_API } from '$env/static/private';
@@ -11,26 +10,9 @@ export const load = async () => {
 	return { form };
 };
 
-async function imageToBase64(image: Buffer) {
-	const sharpImage = sharp(image);
-	const metadata = await sharpImage.metadata();
-	const landscape =
-		metadata.width && metadata.height && metadata.width > metadata.height;
-	const buff: Buffer = await sharpImage
-		.resize({
-			// 3:4 or 4:3 aspect ratio, 768x768 costs 258 tokens
-			height: landscape ? 3 * 768 : 4 * 768,
-			width: landscape ? 4 * 768 : 3 * 768,
-			withoutEnlargement: true,
-			fit: "inside",
-		})
-		.jpeg({ mozjpeg: true })
-		.toBuffer();
-	return buff.toString("base64");
-}
 const genAI = new GoogleGenerativeAI(GEMINI_API);
 const model = genAI.getGenerativeModel({
-	model: "gemini-2.0-flash-lite",
+	model: "gemini-2.0-flash",
 	generationConfig: {
 		responseMimeType: "application/json",
 	},
@@ -41,10 +23,9 @@ const prompt = `You are a librarian, and it is your job to find and record all t
 	The list should look as follows: [{author: "George Orwell", title: "1984", box: [ymin, xmin, ymax, xmax]}, ...]. 
 	If you can not figure out the author or title, skip the book and if you do not see any books in the image, return an empty list [].`;
 async function getBooks(file: File) {
-	const image = Buffer.from(await file.arrayBuffer());
 	const imageParts = {
 		inlineData: {
-			data: await imageToBase64(image),
+			data: new Buffer(await file.arrayBuffer()).toString("base64"),
 			mimeType: "image/jpeg",
 		},
 	};
