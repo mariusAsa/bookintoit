@@ -3,15 +3,11 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import sharp from "sharp";
 import { fail, message, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
-import { z } from "zod";
 import { GEMINI_API } from '$env/static/private';
-
-const schema = z.object({
-	fileToUpload: z.any(),
-});
+import { IMAGE_SCHEMA } from '$lib/schema.js';
 
 export const load = async () => {
-	const form = await superValidate(zod(schema));
+	const form = await superValidate(zod(IMAGE_SCHEMA));
 	return { form };
 };
 
@@ -22,11 +18,15 @@ async function imageToBase64(image: Buffer) {
 		metadata.width && metadata.height && metadata.width > metadata.height;
 	const buff: Buffer = await sharpImage
 		.resize({
-			// 3:4 or 4:3 aspect ratio, 768^2 costs 258 tokens
+			// 3:4 or 4:3 aspect ratio, 768x768 costs 258 tokens
 			height: landscape ? 3 * 768 : 4 * 768,
 			width: landscape ? 4 * 768 : 3 * 768,
 			withoutEnlargement: true,
 			fit: "inside",
+		})
+		.jpeg({
+			quality: 95,
+			chromaSubsampling: '4:4:4'
 		})
 		.toBuffer();
 	return buff.toString("base64");
@@ -57,12 +57,12 @@ async function getBooks(file: File) {
 }
 
 export const actions = {
-	default: async ({ request, url }) => {
-		const form = await superValidate(request, zod(schema));
-		if (form.data.fileToUpload.size > 12 * 1024 * 1024 || !form.valid) {
+	default: async ({ request }) => {
+		const form = await superValidate(request, zod(IMAGE_SCHEMA));
+		if (!form.valid) {
 			return fail(400, { form });
 		}
-		const generatedContent = await getBooks(form.data.fileToUpload);
+		const generatedContent = await getBooks(form.data.image);
 		try {
 			return message(form, JSON.parse(generatedContent.response.text()));
 		} catch {
