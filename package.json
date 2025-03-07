@@ -34,6 +34,7 @@
 		"zod": "^3.24.2"
 	},
 	"dependencies": {
+		"@cf-wasm/photon": "^0.1.29",
 		"@chewhx/google-books": "^4.0.1",
 		"@google/generative-ai": "^0.23.0"
 	}

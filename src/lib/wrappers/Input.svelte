@@ -1,5 +1,5 @@
 <script lang="ts">
-    let { file, selectedBook } = $props();
+    let { file, selectedBook, blur } = $props();
     let showDropZone = $state(true);
     let img: HTMLImageElement | undefined = $state(undefined);
     function handleFileChange(event: DragEvent | Event) {
@@ -37,7 +37,7 @@
     })
 </script>
 
-<div class="w-1/3 m-auto mt-4">
+<div class="w-1/2 max-w-[400px] m-auto mt-4" class:blur={blur}>
     {#if showDropZone}
         <!-- svelte-ignore a11y_no_static_element_interactions -->
         <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -48,7 +48,7 @@
             on:drop|preventDefault={handleFileChange}
             on:click={() => input?.click()}
         >
-            Upload an image here
+            Upload an image of a bookshelf here
         </div>
     {/if}
 

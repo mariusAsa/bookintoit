@@ -13,15 +13,15 @@ export const load = async () => {
 const genAI = new GoogleGenerativeAI(GEMINI_API);
 const model = genAI.getGenerativeModel({
 	model: "gemini-2.0-flash",
+	systemInstruction: "You are a librarian, and it is your job to find and record all the books inside an image of a bookshelf.",
 	generationConfig: {
 		responseMimeType: "application/json",
 	},
 });
-const prompt = `You are a librarian, and it is your job to find and record all the books inside an image of a bookshelf. 
-	You must record your finding via a list made out of valid JSON objects. 
+const prompt = `Tak a look at the following image of a bookshelf and record your finding via a list made out of JSON objects. 
 	These JSON objects contain the book author, title, and where to find the book via a bounding box. 
 	The list should look as follows: [{author: "George Orwell", title: "1984", box: [ymin, xmin, ymax, xmax]}, ...]. 
-	If you can not figure out the author or title, skip the book and if you do not see any books in the image, return an empty list [].`;
+	If you can not figure out the author or title, skip the book and if you do not see any books in the image, return an empty list.`;
 async function getBooks(file: File) {
 	const imageParts = {
 		inlineData: {

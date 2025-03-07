@@ -1,5 +1,6 @@
 <script lang="ts">
     import DisplayBooks from "$lib/DisplayBooks.svelte";
+    import Spinner from "$lib/Spinner.svelte";
     import type { Book } from "$lib/types.js";
     import Input from "$lib/wrappers/Input.svelte";
     import { fileProxy, superForm } from "sveltekit-superforms";
@@ -8,8 +9,9 @@
     const { form, message, enhance, delayed } = superForm(data.form, {
         delayMs: 500,
         onUpdated({ form }) {
-            console.log($message);
-            if (form.message) books = $message;
+            if (form.message) {
+                books = $message
+            };
         },
     });
     const file = fileProxy(form, 'image');
@@ -18,8 +20,12 @@
     let disabled = $derived($file.length === 0 || $delayed)
 </script>
 
-<div class:blur={$delayed}>
-    <Input {file} {selectedBook}/>
+
+<div class="relative">
+    <Input {file} {selectedBook} blur={$delayed}/>
+    {#if $delayed}
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"><Spinner /></div>  
+    {/if}
 </div>
 
 <div class="justify-center flex {disabled ? '' : 'pt-4'}">
