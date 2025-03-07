@@ -2,6 +2,7 @@
 let { file, selectedBook, blur } = $props();
 let showDropZone = $state(true);
 let canvas: HTMLCanvasElement | undefined = $state(undefined);
+let shapeCanvas: HTMLCanvasElement | undefined = $state(undefined);
 function handleFileChange(event: DragEvent | Event) {
 	if (event instanceof DragEvent) {
 		$file = event.dataTransfer?.files.item(0);
@@ -13,7 +14,7 @@ function handleFileChange(event: DragEvent | Event) {
 		reader.addEventListener("load", () => {
 			let img = new Image();
 			img.addEventListener("load", () => {
-				if (canvas) {
+				if (canvas && shapeCanvas) {
 					if (img.width > img.height) {
 						canvas.width = 768 * 4;
 						canvas.height = ((768 * 4) / img.width) * img.height;
@@ -21,6 +22,8 @@ function handleFileChange(event: DragEvent | Event) {
 						canvas.height = 768 * 4;
 						canvas.width = ((768 * 4) / img.height) * img.width;
 					}
+					shapeCanvas.width = canvas.width;
+					shapeCanvas.height = canvas.height;
 					canvas
 						.getContext("2d")
 						?.drawImage(img, 0, 0, canvas.width, canvas.height);
@@ -28,7 +31,6 @@ function handleFileChange(event: DragEvent | Event) {
 						(blob) => {
 							if (blob) {
 								$file = new File([blob], "image.jpg");
-								console.log($file[0].size / 1024 / 1024);
 							}
 						},
 						"image/jpeg",
@@ -43,6 +45,28 @@ function handleFileChange(event: DragEvent | Event) {
 	}
 }
 let input: HTMLInputElement | undefined = $state(undefined);
+
+$effect(() => {
+	if (!selectedBook || !selectedBook.box || !shapeCanvas) return;
+	const [ymin, xmin, ymax, xmax] = [
+		selectedBook.box[0] / 1000,
+		selectedBook.box[1] / 1000,
+		selectedBook.box[2] / 1000,
+		selectedBook.box[3] / 1000,
+	];
+	const ctx = shapeCanvas.getContext("2d");
+	ctx?.clearRect(0, 0, shapeCanvas.width, shapeCanvas.height);
+	if (ctx) {
+		ctx.strokeStyle = "yellow";
+		ctx.lineWidth = 10;
+		ctx.strokeRect(
+			shapeCanvas.width * xmin,
+			shapeCanvas.height * ymin,
+			shapeCanvas.width * (xmax - xmin),
+			shapeCanvas.height * (ymax - ymin),
+		);
+	}
+});
 </script>
 
 <div class="w-4/5 max-w-[400px] m-auto mt-4" class:blur={blur}>
@@ -62,6 +86,7 @@ let input: HTMLInputElement | undefined = $state(undefined);
 
     <div class="flex relative">
         <canvas bind:this={canvas} class="rounded-lg w-full" height=0 width=0></canvas>
+		<canvas bind:this={shapeCanvas} class="rounded-lg absolute w-full" height=0 width=0></canvas>
     </div>
 </div>
 <input

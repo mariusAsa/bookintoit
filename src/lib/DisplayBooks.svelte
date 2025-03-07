@@ -1,7 +1,10 @@
 <script lang="ts">
 import type { Book } from "./types";
 
-let { books, handleClick }: { books: Book[]; handleClick: (book: Book) => void } = $props();
+let {
+	books,
+	handleClick,
+}: { books: Book[]; handleClick: (book: Book) => void } = $props();
 </script>
 
 <div class="flex flex-col gap-1 items-center justify-center py-4">
