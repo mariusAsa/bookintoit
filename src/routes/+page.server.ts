@@ -2,7 +2,8 @@ import { Buffer } from "node:buffer";
 import { GEMINI_API } from "$env/static/private";
 import { IMAGE_SCHEMA } from "$lib/schema.js";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { fail, message, superValidate } from "sveltekit-superforms";
+import { message, superValidate } from "sveltekit-superforms";
+import { setError } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 
 export const load = async () => {
@@ -19,7 +20,7 @@ const model = genAI.getGenerativeModel({
 		responseMimeType: "application/json",
 	},
 });
-const prompt = `Tak a look at the following image of a bookshelf and record your finding via a list made out of JSON objects. 
+const prompt = `Take a look at the following image of a bookshelf and record your finding via a list made out of JSON objects. 
 	These JSON objects contain the book author, title, and where to find the book via a bounding box. 
 	The list should look as follows: [{author: "George Orwell", title: "1984", box: [ymin, xmin, ymax, xmax]}, ...]. 
 	If you can not figure out the author or title, skip the book and if you do not see any books in the image, return an empty list.`;
@@ -37,7 +38,7 @@ export const actions = {
 	default: async ({ request }) => {
 		const form = await superValidate(request, zod(IMAGE_SCHEMA));
 		if (!form.valid) {
-			return fail(400, { form });
+			return setError(form, "Please Reload");
 		}
 		const generatedContent = await getBooks(form.data.image);
 		try {

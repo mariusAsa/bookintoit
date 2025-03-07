@@ -95,7 +95,7 @@ $effect(() => {
             onchange={e => handleFileChange(e)}
             type="file"
             name="image"
-            accept="image/jpeg"
+            accept="image/*"
             required
             hidden
     />
