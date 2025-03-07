@@ -1,23 +1,23 @@
 <script lang="ts">
-    import DisplayBooks from "$lib/DisplayBooks.svelte";
-    import Spinner from "$lib/Spinner.svelte";
-    import type { Book } from "$lib/types.js";
-    import Input from "$lib/wrappers/Input.svelte";
-    import { fileProxy, superForm } from "sveltekit-superforms";
+import DisplayBooks from "$lib/DisplayBooks.svelte";
+import Spinner from "$lib/Spinner.svelte";
+import type { Book } from "$lib/types.js";
+import Input from "$lib/wrappers/Input.svelte";
+import { fileProxy, superForm } from "sveltekit-superforms";
 
-    let { data } = $props();
-    const { form, message, enhance, delayed } = superForm(data.form, {
-        delayMs: 500,
-        onUpdated({ form }) {
-            if (form.message) {
-                books = $message
-            };
-        },
-    });
-    const file = fileProxy(form, 'image');
-    let books: Array<Book> = $state([]);
-    let selectedBook: Book | undefined = $state(undefined)
-    let disabled = $derived($file.length === 0 || $delayed)
+let { data } = $props();
+const { form, message, enhance, delayed } = superForm(data.form, {
+	delayMs: 500,
+	onUpdated({ form }) {
+		if (form.message) {
+			books = $message;
+		}
+	},
+});
+const file = fileProxy(form, "image");
+let books: Array<Book> = $state([]);
+let selectedBook: Book | undefined = $state(undefined);
+let disabled = $derived($file.length === 0 || $delayed);
 </script>
 
 

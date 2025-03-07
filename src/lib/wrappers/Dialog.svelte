@@ -1,11 +1,11 @@
 <script lang="ts">
-    let dialog: HTMLDialogElement | null = $state(null);
-    export function open() {
-        dialog?.showModal();
-    }
-    export function close() {
-        dialog?.close();
-    }
+let dialog: HTMLDialogElement | null = $state(null);
+export function open() {
+	dialog?.showModal();
+}
+export function close() {
+	dialog?.close();
+}
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->

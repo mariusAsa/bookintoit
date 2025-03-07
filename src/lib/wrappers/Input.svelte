@@ -1,42 +1,48 @@
 <script lang="ts">
-    let { file, selectedBook, blur } = $props();
-    let showDropZone = $state(true);
-    let canvas: HTMLCanvasElement | undefined = $state(undefined);
-    function handleFileChange(event: DragEvent | Event) {
-        if (event instanceof DragEvent) {
-            $file = event.dataTransfer?.files.item(0);
-        } else if (event.target instanceof HTMLInputElement) {
-            $file = event.target.files?.item(0);
-        }
-        if ($file) {
-            const reader = new FileReader();
-            reader.addEventListener("load", () => {
-                let img = new Image();
-                img.addEventListener("load", () => {
-                    if(canvas){
-                        if(img.width > img.height){
-                            canvas.width = 768*4
-                            canvas.height = 768*4 / img.width * img.height;
-                        } else {
-                            canvas.height = 768*4
-                            canvas.width = 768*4 / img.height * img.width;
-                        }
-                        canvas.getContext('2d')?.drawImage(img,0,0,canvas.width,canvas.height);
-                        canvas.toBlob((blob) => {
-                            if(blob){
-                                $file = new File([blob], "image.jpg");
-                                console.log($file[0].size / 1024 / 1024);
-                            }
-                        }, "image/jpeg", 0.95)
-                    }
-                });
-                img.setAttribute("src", reader.result as string);
-                showDropZone = false;
-            });
-            reader.readAsDataURL($file.item(0));
-        }
-    }
-    let input: HTMLInputElement | undefined = $state(undefined)
+let { file, selectedBook, blur } = $props();
+let showDropZone = $state(true);
+let canvas: HTMLCanvasElement | undefined = $state(undefined);
+function handleFileChange(event: DragEvent | Event) {
+	if (event instanceof DragEvent) {
+		$file = event.dataTransfer?.files.item(0);
+	} else if (event.target instanceof HTMLInputElement) {
+		$file = event.target.files?.item(0);
+	}
+	if ($file) {
+		const reader = new FileReader();
+		reader.addEventListener("load", () => {
+			let img = new Image();
+			img.addEventListener("load", () => {
+				if (canvas) {
+					if (img.width > img.height) {
+						canvas.width = 768 * 4;
+						canvas.height = ((768 * 4) / img.width) * img.height;
+					} else {
+						canvas.height = 768 * 4;
+						canvas.width = ((768 * 4) / img.height) * img.width;
+					}
+					canvas
+						.getContext("2d")
+						?.drawImage(img, 0, 0, canvas.width, canvas.height);
+					canvas.toBlob(
+						(blob) => {
+							if (blob) {
+								$file = new File([blob], "image.jpg");
+								console.log($file[0].size / 1024 / 1024);
+							}
+						},
+						"image/jpeg",
+						0.95,
+					);
+				}
+			});
+			img.setAttribute("src", reader.result as string);
+			showDropZone = false;
+		});
+		reader.readAsDataURL($file.item(0));
+	}
+}
+let input: HTMLInputElement | undefined = $state(undefined);
 </script>
 
 <div class="w-4/5 max-w-[400px] m-auto mt-4" class:blur={blur}>

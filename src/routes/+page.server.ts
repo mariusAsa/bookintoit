@@ -1,9 +1,9 @@
-import { Buffer } from 'node:buffer';
+import { Buffer } from "node:buffer";
+import { GEMINI_API } from "$env/static/private";
+import { IMAGE_SCHEMA } from "$lib/schema.js";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { fail, message, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
-import { GEMINI_API } from '$env/static/private';
-import { IMAGE_SCHEMA } from '$lib/schema.js';
 
 export const load = async () => {
 	const form = await superValidate(zod(IMAGE_SCHEMA));
@@ -13,7 +13,8 @@ export const load = async () => {
 const genAI = new GoogleGenerativeAI(GEMINI_API);
 const model = genAI.getGenerativeModel({
 	model: "gemini-2.0-flash",
-	systemInstruction: "You are a librarian, and it is your job to find and record all the books inside an image of a bookshelf.",
+	systemInstruction:
+		"You are a librarian, and it is your job to find and record all the books inside an image of a bookshelf.",
 	generationConfig: {
 		responseMimeType: "application/json",
 	},
