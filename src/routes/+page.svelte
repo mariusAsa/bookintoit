@@ -18,11 +18,6 @@ const file = fileProxy(form, "image");
 let books: Array<Book> = $state([]);
 let selectedBook: Book | undefined = $state(undefined);
 let disabled = $derived($file.length === 0 || $delayed);
-$effect(() => {
-    if ($errors._errors) {
-        console.log($errors._errors);
-    }
-});
 </script>
 
 
@@ -46,7 +41,7 @@ $effect(() => {
             hidden
             bind:files={$file}
         />
-        <button type="submit" class="rounded border py-1 px-2 hover:bg-stone-200 disabled:hidden" {disabled}>
+        <button type="submit" class="rounded border py-1 px-2 hover:bg-stone-300 disabled:hidden" {disabled}>
             {#if $errors._errors}
                 <span class="text-red-500">
                     {$errors._errors}
