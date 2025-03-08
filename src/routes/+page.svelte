@@ -41,7 +41,7 @@ let disabled = $derived($file.length === 0 || $delayed);
             hidden
             bind:files={$file}
         />
-        <button type="submit" class="rounded border py-1 px-2 hover:bg-stone-300 disabled:hidden" {disabled}>
+        <button type="submit" class="rounded-sm border border-uchu-dark-gray py-1 px-2 hover:bg-uchu-gray disabled:hidden" {disabled}>
             {#if $errors._errors}
                 <span class="text-red-500">
                     {$errors._errors}

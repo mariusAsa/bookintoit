@@ -57,9 +57,8 @@ $effect(() => {
 	const ctx = shapeCanvas.getContext("2d");
 	ctx?.clearRect(0, 0, shapeCanvas.width, shapeCanvas.height);
 	if (ctx) {
-		ctx.strokeStyle = "yellow";
-		ctx.lineWidth = 10;
-		ctx.strokeRect(
+		ctx.fillStyle = "oklch(90.92% 0.125 92.56)";
+		ctx.fillRect(
 			shapeCanvas.width * xmin,
 			shapeCanvas.height * ymin,
 			shapeCanvas.width * (xmax - xmin),
@@ -86,7 +85,7 @@ $effect(() => {
 
     <div class="flex relative">
         <canvas bind:this={canvas} class="rounded-lg w-full" height=0 width=0></canvas>
-		<canvas bind:this={shapeCanvas} class="rounded-lg absolute w-full" height=0 width=0></canvas>
+		<canvas bind:this={shapeCanvas} class="rounded-lg absolute w-full blur-[6px]" height=0 width=0></canvas>
     </div>
 </div>
 <input
