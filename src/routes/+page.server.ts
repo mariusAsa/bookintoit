@@ -27,7 +27,7 @@ const prompt = `Take a look at the following image of a bookshelf and record you
 async function getBooks(file: File) {
 	const imageParts = {
 		inlineData: {
-			data: new Buffer(await file.arrayBuffer()).toString("base64"),
+			data: Buffer.from(await file.arrayBuffer()).toString("base64"),
 			mimeType: "image/jpeg",
 		},
 	};
