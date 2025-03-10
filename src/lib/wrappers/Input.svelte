@@ -24,7 +24,9 @@ function handleFileChange(event: DragEvent | Event) {
 					}
 					shapeCanvas.width = canvas.width;
 					shapeCanvas.height = canvas.height;
-					canvas.getContext("2d")?.drawImage(img, 0, 0, canvas.width, canvas.height);
+					canvas
+						.getContext("2d")
+						?.drawImage(img, 0, 0, canvas.width, canvas.height);
 					canvas.toBlob(
 						(blob) => {
 							if (blob) {
@@ -78,7 +80,7 @@ $effect(() => {
             onclick={() => input?.click()}
             onkeydown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input?.click(); } }}
         >
-            Upload an image of a bookshelf here
+            Upload an image of a bookshelf
         </div>
     {/if}
 

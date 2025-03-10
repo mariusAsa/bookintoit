@@ -2,7 +2,7 @@
 import DisplayBooks from "$lib/DisplayBooks.svelte";
 import Spinner from "$lib/Spinner.svelte";
 import type { Book } from "$lib/types.js";
-    import Button from "$lib/wrappers/Button.svelte";
+import Button from "$lib/wrappers/Button.svelte";
 import Input from "$lib/wrappers/Input.svelte";
 import { fileProxy, superForm } from "sveltekit-superforms";
 
@@ -18,7 +18,9 @@ const { form, errors, message, enhance, delayed } = superForm(data.form, {
 const file = fileProxy(form, "image");
 let books: Array<Book> = $state([]);
 let selectedBook: Book | undefined = $state(undefined);
-let disabled: boolean = $derived($file.length === 0 || $delayed || $errors._errors !== undefined);
+let disabled: boolean = $derived(
+	$file.length === 0 || $delayed || $errors._errors !== undefined,
+);
 </script>
 
 <div class="relative">
@@ -46,4 +48,4 @@ let disabled: boolean = $derived($file.length === 0 || $delayed || $errors._erro
         </Button>
     </form>
 </div>
-<DisplayBooks {books} handleClick={(book: Book) => selectedBook = book}/>
+<DisplayBooks bind:selectedBook {books}/>
