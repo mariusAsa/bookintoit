@@ -26,9 +26,14 @@ let disabled: boolean = $derived(
 <div class="relative">
     <Input {file} {selectedBook} blur={$delayed}/>
     {#if $delayed}
-        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"><Spinner /></div>  
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"><Spinner /></div> 
     {/if}
 </div>
+{#if $delayed}
+    <div class="justify-center flex mt-4">
+        Awaiting response from Gemini<span class="animate-[bounce_1s_infinite_100ms]">.</span><span class="animate-[bounce_1s_infinite_200ms]">.</span><span class="animate-[bounce_1s_infinite_300ms]">.</span>
+    </div>
+{/if}
 <div class="justify-center flex {disabled ? '' : 'pt-4'}">
     <form 
         method="POST" 

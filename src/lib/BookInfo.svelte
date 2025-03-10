@@ -11,6 +11,10 @@ async function searchBook(book: Book) {
 	).then((res) => res.json());
 	return f;
 }
+
+function numberToStars(num: number) {
+    return "★".repeat(Math.round(num));
+}
 </script>
 {#if selectedBook}
 <div class="flex items-center gap-2 flex-col">
@@ -21,7 +25,7 @@ async function searchBook(book: Book) {
         <Spinner />
     {:then booksInfo}
         {#each booksInfo.items as info}
-            <a href={info.volumeInfo.previewLink} target="_blank" class="border rounded p-4 mb-4 w-full max-w-xl shadow-sm">
+            <a href={info.volumeInfo.previewLink} target="_blank" class="border rounded p-4 mb-4 max-w-xl w-full min-w-md shadow-sm">
                 <h3 class="text-xl font-bold">{info.volumeInfo.title}</h3>
                 <p class="text-sm text-gray-600">by {info.volumeInfo.authors?.join(', ') || 'Unknown author'}</p>
                 
@@ -34,6 +38,9 @@ async function searchBook(book: Book) {
                     {/if}
                     {#if info.volumeInfo.publisher}
                         <div><span class="font-semibold">Publisher:</span> {info.volumeInfo.publisher}</div>
+                    {/if}
+                    {#if info.volumeInfo.averageRating}
+                        <div class={info.volumeInfo.publisher ? "text-uchu-yellow" : "text-uchu-yellow text-right"}><span class="font-semibold text-uchu-yin">Rating:</span> {numberToStars(info.volumeInfo.averageRating)}</div>
                     {/if}
                 </div>
             </a>
