@@ -8,12 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@cf-wasm/photon':
-        specifier: ^0.1.29
-        version: 0.1.29
-      '@chewhx/google-books':
-        specifier: ^4.0.1
-        version: 4.0.1
       '@google/generative-ai':
         specifier: ^0.23.0
         version: 0.23.0
@@ -148,16 +142,6 @@ packages:
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
-
-  '@cf-wasm/internals@0.0.3':
-    resolution: {integrity: sha512-v6PmiQnJIrVvL2IdPg5aCqARSKw/U1JvFsms2cCt3Szx3/3EvtVVhN9MALCh6kZ2CV2fvzs3tmiYezRQ6JyqcQ==}
-
-  '@cf-wasm/photon@0.1.29':
-    resolution: {integrity: sha512-dqKRSfcqOQpVATTdMrnGjrf0iUH/Yv5woYn81o2nBv2xwSmB91MsnY1b83Bt24vC/oxVqbvio9JQByXT/Ry1lw==}
-
-  '@chewhx/google-books@4.0.1':
-    resolution: {integrity: sha512-bYpwAss4915Gbnh/Z0LBRksvDASSOEHs3NbEEk5y0Pyg1yc7DEyt0/pH7+SVhQyDAOGzqXzlU44Jswy6toABWg==}
-    engines: {node: '>=18'}
 
   '@cloudflare/kv-asset-handler@0.3.4':
     resolution: {integrity: sha512-YLPHc8yASwjNkmcDMQMY35yiWjoKAKnhUbPRszBRS0YgH+IXtsMp61j+yTcnCE3oO2DgP0U3iejLC8FTtKDC8Q==}
@@ -1772,14 +1756,6 @@ snapshots:
 
   '@biomejs/cli-win32-x64@1.9.4':
     optional: true
-
-  '@cf-wasm/internals@0.0.3': {}
-
-  '@cf-wasm/photon@0.1.29':
-    dependencies:
-      '@cf-wasm/internals': 0.0.3
-
-  '@chewhx/google-books@4.0.1': {}
 
   '@cloudflare/kv-asset-handler@0.3.4':
     dependencies:
