@@ -1,19 +1,20 @@
 <script lang="ts">
 import Spinner from "./Spinner.svelte";
-import type { Book, GoogleBookVolume } from "./types";
+import type { ApiResponse, Book } from "./types";
 
 let {
 	selectedBook = $bindable(undefined),
 }: { selectedBook: Book | undefined } = $props();
 async function searchBook(book: Book) {
-	const f: Promise<{ items: GoogleBookVolume[] }> = fetch(
+	const f: Promise<ApiResponse> = fetch(
 		`/api/book?title=${book.title}&author=${book.author}`,
 	).then((res) => res.json());
 	return f;
 }
 
 function numberToStars(num: number) {
-    return "★".repeat(Math.round(num));
+	if (num === 0) return "";
+	return "★".repeat(Math.round(num));
 }
 </script>
 {#if selectedBook}
@@ -24,28 +25,15 @@ function numberToStars(num: number) {
     {#await searchBook(selectedBook)}
         <Spinner />
     {:then booksInfo}
-        {#each booksInfo.items as info}
-            <a href={info.volumeInfo.previewLink} target="_blank" class="border rounded p-4 mb-4 max-w-lg w-full shadow-sm">
-                <h3 class="text-xl font-bold">{info.volumeInfo.title}</h3>
-                <p class="text-sm text-gray-600">by {info.volumeInfo.authors?.join(', ') || 'Unknown author'}</p>
-                
-                <div class="mt-3 grid grid-cols-2 gap-2 text-sm">
-                    {#if info.volumeInfo.publishedDate}
-                        <div><span class="font-semibold">Published:</span> {info.volumeInfo.publishedDate}</div>
-                    {/if}
-                    {#if info.volumeInfo.pageCount}
-                        <div class="text-right"><span class="font-semibold">Pages:</span> {info.volumeInfo.pageCount}</div>
-                    {/if}
-                    {#if info.volumeInfo.publisher}
-                        <div><span class="font-semibold">Publisher:</span> {info.volumeInfo.publisher}</div>
-                    {/if}
-                    {#if info.volumeInfo.averageRating}
-                        <div class={info.volumeInfo.publisher ? "text-uchu-yellow" : "text-uchu-yellow text-right"}><span class="font-semibold text-uchu-yin">Rating:</span> {numberToStars(info.volumeInfo.averageRating)}</div>
-                    {/if}
-                </div>
+        {#each booksInfo as info}
+            <a class="max-w-xl w-full p-4 mb-4 border rounded-lg shadow-md border-uchu-dark-gray" href={info.document.slug ? `https://hardcover.app/books/${info.document.slug}` : "#"} target="_blank">
+                <h3 class="text-xl font-bold">{info.document.title || 'Unknown'}</h3>
+                <p class="text-sm text-gray-600 mb-2">{info.document.author_names.join(', ') || 'Unknown'}</p>
+                <p class="text-yellow-500">{info.document.ratings_count} ratings: {numberToStars(info.document.rating)}</p>
+                <p class="text-xs mt-2 text-gray-500">ISBN: {info.document.isbns[0]}</p>
             </a>
         {/each}
-        {#if booksInfo?.items?.length === undefined}
+        {#if booksInfo?.length === undefined}
             <p class="text-uchu-blue">No books found</p>
         {/if}
     {:catch error}

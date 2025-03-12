@@ -16,6 +16,13 @@ const { form, errors, message, enhance, delayed } = superForm(data.form, {
 	},
 });
 const file = fileProxy(form, "image");
+let defaultBooks: Array<Book> = [
+	{
+		author: "Arundhati Roy",
+		title: "The God of Small Things",
+		box: [472, 434, 654, 480],
+	}
+];
 let books: Array<Book> = $state([]);
 let selectedBook: Book | undefined = $state(undefined);
 let disabled: boolean = $derived(
