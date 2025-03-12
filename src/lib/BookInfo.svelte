@@ -25,7 +25,7 @@ function numberToStars(num: number) {
         <Spinner />
     {:then booksInfo}
         {#each booksInfo.items as info}
-            <a href={info.volumeInfo.previewLink} target="_blank" class="border rounded p-4 mb-4 max-w-xl w-full min-w-md shadow-sm">
+            <a href={info.volumeInfo.previewLink} target="_blank" class="border rounded p-4 mb-4 max-w-lg w-full shadow-sm">
                 <h3 class="text-xl font-bold">{info.volumeInfo.title}</h3>
                 <p class="text-sm text-gray-600">by {info.volumeInfo.authors?.join(', ') || 'Unknown author'}</p>
                 
