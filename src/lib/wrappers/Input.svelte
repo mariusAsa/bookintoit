@@ -14,13 +14,14 @@ function handleFileChange(event: DragEvent | Event) {
 		reader.addEventListener("load", () => {
 			let img = new Image();
 			img.addEventListener("load", () => {
+				const pixels = 768 * 4;
 				if (canvas && shapeCanvas) {
 					if (img.width > img.height) {
-						canvas.width = 768 * 4;
-						canvas.height = ((768 * 4) / img.width) * img.height;
+						canvas.width = pixels;
+						canvas.height = (pixels / img.width) * img.height;
 					} else {
-						canvas.height = 768 * 4;
-						canvas.width = ((768 * 4) / img.height) * img.width;
+						canvas.height = pixels;
+						canvas.width = (pixels / img.height) * img.width;
 					}
 					shapeCanvas.width = canvas.width;
 					shapeCanvas.height = canvas.height;
@@ -34,7 +35,7 @@ function handleFileChange(event: DragEvent | Event) {
 							}
 						},
 						"image/jpeg",
-						0.95,
+						0.975,
 					);
 				}
 			});

@@ -1,7 +1,7 @@
 <script lang="ts">
+import BookInfo from "./BookInfo.svelte";
 import BookList from "./BookList.svelte";
 import type { Book } from "./types";
-import BookInfo from "./BookInfo.svelte";
 let {
 	books,
 	selectedBook = $bindable(undefined),
