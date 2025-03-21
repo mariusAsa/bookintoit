@@ -2,7 +2,7 @@
 let { file, selectedBook, blur } = $props();
 let showDropZone = $state(true);
 let canvas: HTMLCanvasElement | undefined = $state(undefined);
-let shapeCanvas: HTMLCanvasElement | undefined = $state(undefined);
+let zoomCanvas: HTMLCanvasElement | undefined = $state(undefined);
 function handleFileChange(event: DragEvent | Event) {
 	if (event instanceof DragEvent) {
 		$file = event.dataTransfer?.files.item(0);
@@ -15,7 +15,7 @@ function handleFileChange(event: DragEvent | Event) {
 			let img = new Image();
 			img.addEventListener("load", () => {
 				const pixels = 768 * 4;
-				if (canvas && shapeCanvas) {
+				if (canvas && zoomCanvas) {
 					if (img.width > img.height) {
 						canvas.width = pixels;
 						canvas.height = (pixels / img.width) * img.height;
@@ -23,8 +23,8 @@ function handleFileChange(event: DragEvent | Event) {
 						canvas.height = pixels;
 						canvas.width = (pixels / img.height) * img.width;
 					}
-					shapeCanvas.width = canvas.width;
-					shapeCanvas.height = canvas.height;
+					zoomCanvas.width = canvas.width;
+					zoomCanvas.height = canvas.height;
 					canvas
 						.getContext("2d")
 						?.drawImage(img, 0, 0, canvas.width, canvas.height);
@@ -47,26 +47,60 @@ function handleFileChange(event: DragEvent | Event) {
 }
 let input: HTMLInputElement | undefined = $state(undefined);
 
+function getCorner(middle: number, zoomedSpace: number, space: number): number {
+	const halfZoom = Math.floor(zoomedSpace / 2);
+	if (middle < halfZoom) return 0;
+	if (space - middle < halfZoom) return space - zoomedSpace;
+	return middle - halfZoom;
+}
+
+let zoom = $state(0);
 $effect(() => {
-	if (!selectedBook || !selectedBook.box || !shapeCanvas) return;
+	if (!selectedBook) zoom = 3;
+});
+$effect(() => {
+	if (!zoomCanvas || !canvas) return;
+	const zoomCtx = zoomCanvas.getContext("2d");
+	if (!zoomCtx) return;
+	zoomCtx.clearRect(0, 0, zoomCanvas.width, zoomCanvas.height);
+	if (!selectedBook) return;
+
 	const [ymin, xmin, ymax, xmax] = [
 		selectedBook.box[0] / 1000,
 		selectedBook.box[1] / 1000,
 		selectedBook.box[2] / 1000,
 		selectedBook.box[3] / 1000,
 	];
-	const ctx = shapeCanvas.getContext("2d");
-	ctx?.clearRect(0, 0, shapeCanvas.width, shapeCanvas.height);
-	if (ctx) {
-		ctx.strokeStyle = "yellow";
-		ctx.lineWidth = 7.5;
-		ctx.strokeRect(
-			shapeCanvas.width * xmin,
-			shapeCanvas.height * ymin,
-			shapeCanvas.width * (xmax - xmin),
-			shapeCanvas.height * (ymax - ymin),
-		);
-	}
+
+	// Calculate the middle of the selected book
+	const midX = Math.floor((zoomCanvas.width * (xmin + xmax)) / 2);
+	const midY = Math.floor((zoomCanvas.height * (ymin + ymax)) / 2);
+	const zoomedWidth = Math.floor(zoomCanvas.width / zoom);
+	const zoomedHeight = Math.floor(zoomCanvas.height / zoom);
+
+	// Calculate top-left corner of the zoomed area
+	const topX = getCorner(midX, zoomedWidth, zoomCanvas.width);
+	const topY = getCorner(midY, zoomedHeight, zoomCanvas.height);
+
+	zoomCtx.drawImage(
+		canvas,
+		topX,
+		topY,
+		zoomedWidth,
+		zoomedHeight,
+		0,
+		0,
+		zoomCanvas.width,
+		zoomCanvas.height,
+	);
+	zoomCtx.strokeStyle = "yellow";
+	zoomCtx.lineWidth = 7.5;
+	zoomCtx.strokeRect(
+		(zoomCanvas.width * xmin - topX) * zoom,
+		(zoomCanvas.height * ymin - topY) * zoom,
+		zoomCanvas.width * (xmax - xmin) * zoom,
+		zoomCanvas.height * (ymax - ymin) * zoom,
+	);
 });
 </script>
 
@@ -85,10 +119,17 @@ $effect(() => {
         </div>
     {/if}
 
-    <div class="flex relative">
-        <canvas bind:this={canvas} class="rounded-lg w-full" height=0 width=0></canvas>
-		<canvas bind:this={shapeCanvas} class="rounded-lg absolute w-full" height=0 width=0></canvas>
-    </div>
+	<div class="flex relative" onwheel={(e) => {
+		e.preventDefault();
+		if (e.deltaY < 0 && selectedBook) {
+			zoom = Math.min(zoom * 1.05, 10); // Zoom in, with a max limit
+		} else if (selectedBook !== undefined) {
+			zoom = Math.max(zoom / 1.05, 1); // Zoom out, with a min limit
+		}
+	}}>
+		<canvas bind:this={canvas} class="rounded-lg w-full" height=0 width=0></canvas>
+		<canvas bind:this={zoomCanvas} class="rounded-lg absolute w-full" height=0 width=0></canvas>
+	</div>
 </div>
 <input
             bind:this={input}
