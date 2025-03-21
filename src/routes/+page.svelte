@@ -23,7 +23,7 @@ let defaultBooks: Array<Book> = [
 		box: [472, 434, 654, 480],
 	},
 ];
-let books: Array<Book> = $state(defaultBooks);
+let books: Array<Book> = $state([]);
 let selectedBook: Book | undefined = $state(undefined);
 let disabled: boolean = $derived(
 	$file.length === 0 || $delayed || $errors._errors !== undefined,

@@ -32,17 +32,17 @@ function sortBooks(sortBy: keyof Book, ascending: number, books: Book[]) {
 let sortedBooks = $derived(sortBooks(key, ascending, books));
 </script>
 
-<div class="grid grid-cols-3 w-full max-w-[700px] self-center" transition:slide={{duration: 250, easing: cubicInOut}}>
-	<button class="font-bold hover:underline self-center col-span-1" onclick={() => setKey("author")}>
+<div class="grid grid-cols-3 gap-1 w-full max-w-[700px] self-center" transition:slide={{duration: 250, easing: cubicInOut}}>
+	<button class="hover:bg-uchu-gray self-center col-span-1 border rounded border-uchu-gray shadow-sm py-0.5" onclick={() => setKey("author")}>
 		Author {key === "author" ? (ascending === 1 ? "↓" : "↑") : ""}
 	</button>
-	<button class="font-bold hover:underline self-center col-span-2 border-l border-uchu-gray" onclick={() => setKey("title")}>
+	<button class="hover:bg-uchu-gray self-center col-span-2 border rounded border-uchu-gray shadow-sm py-0.5" onclick={() => setKey("title")}>
 		Title {key === "title" ? (ascending === 1 ? "↓" : "↑") : ""}
 	</button>
 	{#each sortedBooks as book}
-		<button class="col-span-3 grid grid-cols-3 hover:bg-uchu-gray self-center w-full border-t border-uchu-gray" onclick={() => handleClick(book)}>
-			<div class="col-span-1 text-sm py-1 ">{book.author}</div>
-			<div class="col-span-2 border-l border-uchu-gray text-sm py-1">{book.title}</div>
+		<button class="col-span-3 grid grid-cols-3 hover:bg-uchu-gray self-center w-full border-t border rounded border-uchu-gray shadow-sm py-1" onclick={() => handleClick(book)}>
+			<div class="col-span-1 text-sm">{book.author},</div>
+			<div class="col-span-2 text-sm">{book.title}</div>
 		</button>
 	{/each}
 </div>

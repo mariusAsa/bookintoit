@@ -19,7 +19,7 @@ function numberToStars(num: number) {
 </script>
 {#if selectedBook}
 <div class="flex items-center gap-2 flex-col">
-    <button onclick={() => selectedBook = undefined} class="hover:underline pb-2 rounded text-lg">
+    <button onclick={() => selectedBook = undefined} class="hover:bg-uchu-gray rounded text-lg border border-uchu-gray shadow-sm py-0.5 px-3 mb-3">
         &larr; {selectedBook.author}, {selectedBook.title}
     </button>
     {#await searchBook(selectedBook)}
