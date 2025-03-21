@@ -1,6 +1,5 @@
 <script lang="ts">
 import DisplayBooks from "$lib/DisplayBooks.svelte";
-import Spinner from "$lib/Spinner.svelte";
 import type { Book } from "$lib/types.js";
 import Button from "$lib/wrappers/Button.svelte";
 import Input from "$lib/wrappers/Input.svelte";
