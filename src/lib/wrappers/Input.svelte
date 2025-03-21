@@ -119,14 +119,43 @@ $effect(() => {
         </div>
     {/if}
 
-	<div class="flex relative" onwheel={(e) => {
-		e.preventDefault();
-		if (e.deltaY < 0 && selectedBook) {
-			zoom = Math.min(zoom * 1.05, 10); // Zoom in, with a max limit
-		} else if (selectedBook !== undefined) {
-			zoom = Math.max(zoom / 1.05, 1); // Zoom out, with a min limit
-		}
-	}}>
+	<div class="flex relative" 
+		onwheel={(e) => {
+			e.preventDefault();
+			if (e.deltaY < 0 && selectedBook) {
+				zoom = Math.min(zoom * 1.05, 10); // Zoom in, with a max limit
+			} else if (selectedBook !== undefined) {
+				zoom = Math.max(zoom / 1.05, 1); // Zoom out, with a min limit
+			}
+		}}
+		ontouchstart={(e) => {
+			if (e.touches.length !== 2) return;
+			const dist = Math.hypot(
+				e.touches[0].pageX - e.touches[1].pageX,
+				e.touches[0].pageY - e.touches[1].pageY
+			);
+			e.currentTarget.dataset.pinchDistance = dist.toString();
+		}}
+		ontouchmove={(e) => {
+			if (e.touches.length !== 2 || !selectedBook) return;
+			e.preventDefault();
+			
+			const startDist = Number(e.currentTarget.dataset.pinchDistance || 0);
+			const currentDist = Math.hypot(
+				e.touches[0].pageX - e.touches[1].pageX,
+				e.touches[0].pageY - e.touches[1].pageY
+			);
+			
+			if (startDist > 0) {
+				const scale = currentDist / startDist;
+				if (scale > 1.02) {
+					zoom = Math.min(zoom * 1.02, 10);
+				} else if (scale < 0.98) {
+					zoom = Math.max(zoom / 1.02, 1);
+				}
+				e.currentTarget.dataset.pinchDistance = currentDist.toString();
+			}
+		}}>
 		<canvas bind:this={canvas} class="rounded-lg w-full" height=0 width=0></canvas>
 		<canvas bind:this={zoomCanvas} class="rounded-lg absolute w-full" height=0 width=0></canvas>
 	</div>
