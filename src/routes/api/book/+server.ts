@@ -31,8 +31,8 @@ export const GET: RequestHandler = async ({ url }) => {
 			}
 		}
 	`;
-	const resp: unknown = await fetchGraphQL(operation, "LordOfTheRingsBooks");
-	if (resp?.data?.search?.results?.hits === undefined)
-		return new Response("{}");
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	const resp: any = await fetchGraphQL(operation, "LordOfTheRingsBooks");
+	if (!resp?.data?.search?.results?.hits) return new Response("{}");
 	return new Response(JSON.stringify(resp.data.search.results.hits));
 };

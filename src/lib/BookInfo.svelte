@@ -8,6 +8,12 @@ let {
 async function searchBook(book: Book) {
 	const f: Promise<ApiResponse> = fetch(
 		`/api/book?title=${book.title}&author=${book.author}`,
+        {
+            method: "GET",
+            headers: {
+                "content-type": "application/json",
+            },
+        }
 	).then((res) => res.json());
 	return f;
 }
