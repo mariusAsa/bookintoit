@@ -1,4 +1,6 @@
 <script lang="ts">
+import ZoomButtons from "$lib/ZoomButtons.svelte";
+
 let { file, selectedBook, blur } = $props();
 let showDropZone = $state(true);
 let canvas: HTMLCanvasElement | undefined = $state(undefined);
@@ -56,7 +58,7 @@ function getCorner(middle: number, zoomedSpace: number, space: number): number {
 
 let zoom = $state(0);
 $effect(() => {
-	if (!selectedBook) zoom = 2;
+	if (!selectedBook) zoom = 1;
 });
 $effect(() => {
 	if (!zoomCanvas || !canvas) return;
@@ -102,6 +104,10 @@ $effect(() => {
 		zoomCanvas.height * (ymax - ymin) * zoom,
 	);
 });
+
+function scale(factor: number) {
+	zoom = Math.min(Math.max(zoom * factor, 1), 10);
+}
 </script>
 
 <div class="w-4/5 max-w-[400px] m-auto mt-4" class:blur={blur}>
@@ -120,16 +126,19 @@ $effect(() => {
     {/if}
 
 	<div class="flex relative" 
-		onwheel={(e) => {
-			e.preventDefault();
-			if (e.deltaY < 0 && selectedBook) {
-				zoom = Math.min(zoom * 1.05, 10); // Zoom in, with a max limit
-			} else if (selectedBook !== undefined) {
-				zoom = Math.max(zoom / 1.05, 1); // Zoom out, with a min limit
-			}
-		}}>
+	onwheel={(e) => {
+		e.preventDefault();
+		if (e.deltaY < 0 && selectedBook) {
+			scale(1.05); // Zoom in, with a max limit
+		} else if (selectedBook !== undefined) {
+			scale(0.975); // Zoom out, with a min limit
+		}
+	}}>
 		<canvas bind:this={canvas} class="rounded-lg w-full" height=0 width=0></canvas>
 		<canvas bind:this={zoomCanvas} class="rounded-lg absolute w-full" height=0 width=0></canvas>
+		{#if selectedBook}
+			<ZoomButtons {scale} />
+		{/if}
 	</div>
 </div>
 <input
