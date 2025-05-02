@@ -32,7 +32,7 @@ function sortBooks(sortBy: keyof Book, ascending: number, books: Book[]) {
 let sortedBooks = $derived(sortBooks(key, ascending, books));
 </script>
 
-<div class="grid grid-cols-3 gap-1 w-full max-w-[700px] self-center" transition:slide={{duration: 250, easing: cubicInOut}}>
+<div class="grid grid-cols-3 gap-1 w-full self-center px-1 max-w-fit" transition:slide={{duration: 250, easing: cubicInOut}}>
 	<button class="hover:bg-uchu-gray self-center col-span-1 border rounded border-uchu-gray shadow-sm py-0.5" onclick={() => setKey("author")}>
 		Author {key === "author" ? (ascending === 1 ? "↓" : "↑") : ""}
 	</button>

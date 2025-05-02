@@ -19,7 +19,7 @@ async function searchBook(book: Book) {
 }
 </script>
 {#if selectedBook}
-<div class="flex items-center gap-2 flex-col">
+<div class="flex items-center gap-2 flex-col px-1">
     <button onclick={() => selectedBook = undefined} class="hover:bg-uchu-gray rounded text-lg border border-uchu-gray shadow-sm py-0.5 px-3 mb-3">
         &larr; {selectedBook.author}, {selectedBook.title}
     </button>
@@ -39,7 +39,7 @@ async function searchBook(book: Book) {
             {/each}
         {/if}
     {:catch error}
-        {error}
+        Perhaps you did not upload a bookshelf. Error: {error}
     {/await}
 </div>
 {/if}
