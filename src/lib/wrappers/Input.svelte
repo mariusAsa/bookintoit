@@ -1,7 +1,7 @@
 <script lang="ts">
 import ZoomButtons from "$lib/ZoomButtons.svelte";
 
-let { file, selectedBook, blur } = $props();
+let { file, selectedBook, blur, enableButton } = $props();
 let showDropZone = $state(true);
 let canvas: HTMLCanvasElement | undefined = $state(undefined);
 let zoomCanvas: HTMLCanvasElement | undefined = $state(undefined);
@@ -45,6 +45,7 @@ function handleFileChange(event: DragEvent | Event) {
 			showDropZone = false;
 		});
 		reader.readAsDataURL($file.item(0));
+		enableButton();
 	}
 }
 let input: HTMLInputElement | undefined = $state(undefined);
@@ -143,8 +144,7 @@ function scale(factor: number) {
 </div>
 <input
             bind:this={input}
-            bind:files={$file}
-            onchange={e => handleFileChange(e)}
+            onchange={e => { handleFileChange(e);}}
             type="file"
             name="image"
             accept="image/*"

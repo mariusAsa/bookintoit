@@ -13,7 +13,7 @@ export const load = async () => {
 
 const genAI = new GoogleGenerativeAI(GEMINI_API);
 const model = genAI.getGenerativeModel({
-	model: "gemini-2.0-flash",
+	model: "gemini-2.5-flash-preview-04-17",
 	systemInstruction:
 		"You are a librarian, and it is your job to find and record all the books inside an image of a bookshelf.",
 	generationConfig: {

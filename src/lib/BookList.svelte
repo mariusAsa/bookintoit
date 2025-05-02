@@ -40,7 +40,7 @@ let sortedBooks = $derived(sortBooks(key, ascending, books));
 		Title {key === "title" ? (ascending === 1 ? "↓" : "↑") : ""}
 	</button>
 	{#each sortedBooks as book}
-		<button class="col-span-3 grid grid-cols-3 hover:bg-uchu-gray self-center w-full border-t border rounded border-uchu-gray py-1" onclick={() => handleClick(book)}>
+		<button class="col-span-3 grid grid-cols-3 hover:bg-uchu-gray self-center w-full rounded py-1" onclick={() => handleClick(book)}>
 			<div class="col-span-1 text-sm">{book.author},</div>
 			<div class="col-span-2 text-sm">{book.title}</div>
 		</button>
