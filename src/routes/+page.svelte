@@ -348,7 +348,7 @@ const _defaultBooks: Array<Book> = [
 		box: [675, 891, 970, 971],
 	},
 ];
-let books: Array<Book> = $state(_defaultBooks);
+let books: Array<Book> = $state([]);
 let selectedBook: Book | undefined = $state(undefined);
 
 let disabled = $state(true);
