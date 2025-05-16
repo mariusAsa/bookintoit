@@ -16,7 +16,7 @@ These JSON objects contain the book author, title, and where to find the book vi
 The list should look as follows: [{author: "George Orwell", title: "1984", box: [ymin, xmin, ymax, xmax]}, ...]. 
 If you can not figure out the author or title, skip the book, and if you do not see any books in the image, return an empty list.`;
 
-async function getBooks(file: File) {
+async function getBooks(file: File, model: string) {
 	const contents = [
 		{
 			inlineData: {
@@ -27,11 +27,11 @@ async function getBooks(file: File) {
 		{ text: prompt },
 	];
 	const modelOutput = genAI.models.generateContent({
-		model: "gemini-2.0-flash",
+		model: model,
 		config: {
 			responseMimeType: "application/json",
 			systemInstruction:
-				"You are a librarian, and it is your job to find and record all the books inside an image of a bookshelf. You write down your findings in JSON and in sentance case.",
+				"You are a librarian, and it is your job to find and record all the books inside an image of a bookshelf. You write down your findings in JSON and in sentence case.",
 			responseSchema: {
 				type: Type.ARRAY,
 				items: {
@@ -70,13 +70,33 @@ export const actions = {
 			return setError(form, "Please Reload");
 		}
 		try {
-			const generatedContent = await getBooks(form.data.image);
+			const generatedContent = await getBooks(
+				form.data.image,
+				"gemini-2.5-flash-preview-04-17",
+			);
 			return message(form, JSON.parse(generatedContent.text ?? "[]"));
 		} catch {
-			return setError(
-				form,
-				"Ran into an API call limit. Please try again later.",
-			);
+			console.log("Running Gemini 2.0");
 		}
+		try {
+			const generatedContent = await getBooks(
+				form.data.image,
+				"gemini-2.0-flash",
+			);
+			return message(form, JSON.parse(generatedContent.text ?? "[]"));
+		} catch {
+			console.log("Running Gemini 2.0 lite");
+		}
+		try {
+			const generatedContent = await getBooks(
+				form.data.image,
+				"gemini-2.0-flash-lite",
+			);
+			return message(form, JSON.parse(generatedContent.text ?? "[]"));
+		} catch {}
+		return setError(
+			form,
+			"Ran into an API call limit. Please try again later.",
+		);
 	},
 };
