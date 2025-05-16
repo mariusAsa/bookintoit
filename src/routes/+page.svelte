@@ -1,8 +1,8 @@
 <script lang="ts">
 import DisplayBooks from "$lib/DisplayBooks.svelte";
+import Input from "$lib/Input.svelte";
 import type { Book } from "$lib/types.js";
 import Button from "$lib/wrappers/Button.svelte";
-import Input from "$lib/wrappers/Input.svelte";
 import { fileProxy, superForm } from "sveltekit-superforms";
 
 let { data } = $props();
@@ -15,6 +15,7 @@ const { form, errors, message, enhance, delayed } = superForm(data.form, {
 	},
 });
 const file = fileProxy(form, "image");
+
 const _defaultBooks: Array<Book> = [
 	{
 		author: "Peter Robinson",
@@ -362,9 +363,19 @@ function enableButton() {
 		disabled = false;
 	}
 }
+let input: Input | undefined = $state(undefined);
+
+let defaultDisabled = $state(false);
+$effect(() => {
+	if (!disabled) {
+		defaultDisabled = true;
+	}
+});
 </script>
 
-<Input {file} {selectedBook} blur={$delayed} {enableButton}/>
+{#key file}
+	<Input bind:this={input} {file} {selectedBook} blur={$delayed} {enableButton} />
+{/key}
 {#if $delayed}
     <div class="justify-center flex mt-4">
         Awaiting response from Gemini<span class="animate-[bounce_1s_infinite_100ms]">.</span><span class="animate-[bounce_1s_infinite_200ms]">.</span><span class="animate-[bounce_1s_infinite_300ms]">.</span>
@@ -387,6 +398,13 @@ function enableButton() {
         <Button type="submit" {disabled}>
             Send to Gemini
         </Button>
+
+		<Button type="button" on:click={() => input?.loadDefaultFile()} disabled={defaultDisabled}>
+			Load Default Image
+		</Button>
+		{#if $errors?._errors}
+			<span class="text-uchu-red">{$errors._errors[0]}</span>
+		{/if}
     </form>
 </div>
 <DisplayBooks bind:selectedBook {books}/>

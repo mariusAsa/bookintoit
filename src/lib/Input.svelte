@@ -1,16 +1,12 @@
 <script lang="ts">
+import defaultImage from "$assets/book.jpg";
 import ZoomButtons from "$lib/ZoomButtons.svelte";
-
 let { file, selectedBook, blur, enableButton } = $props();
 let showDropZone = $state(true);
 let canvas: HTMLCanvasElement | undefined = $state(undefined);
 let zoomCanvas: HTMLCanvasElement | undefined = $state(undefined);
-function handleFileChange(event: DragEvent | Event) {
-	if (event instanceof DragEvent) {
-		$file = event.dataTransfer?.files.item(0);
-	} else if (event.target instanceof HTMLInputElement) {
-		$file = event.target.files?.item(0);
-	}
+
+function drawFile() {
 	if ($file) {
 		const reader = new FileReader();
 		reader.addEventListener("load", () => {
@@ -48,6 +44,22 @@ function handleFileChange(event: DragEvent | Event) {
 		enableButton();
 	}
 }
+
+function handleFileChange(event: DragEvent | Event) {
+	if (event instanceof DragEvent) {
+		$file = event.dataTransfer?.files.item(0);
+	} else if (event?.target instanceof HTMLInputElement) {
+		$file = event.target.files?.item(0);
+	}
+	drawFile();
+}
+
+export async function loadDefaultFile() {
+	const imageBytes = await (await fetch(defaultImage)).arrayBuffer();
+	$file = new File([imageBytes], "book.jpg", { type: "image/jpeg" });
+	drawFile();
+}
+
 let input: HTMLInputElement | undefined = $state(undefined);
 
 function getCorner(middle: number, zoomedSpace: number, space: number): number {
