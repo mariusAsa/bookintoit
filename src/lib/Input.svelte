@@ -71,7 +71,7 @@ function getCorner(middle: number, zoomedSpace: number, space: number): number {
 
 let zoom = $state(0);
 $effect(() => {
-	if (!selectedBook) zoom = 1;
+	if (!selectedBook) zoom = 1.5;
 });
 $effect(() => {
 	if (!zoomCanvas || !canvas) return;

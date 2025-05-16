@@ -400,7 +400,7 @@ $effect(() => {
         </Button>
 
 		<Button type="button" on:click={() => input?.loadDefaultFile()} disabled={defaultDisabled}>
-			Load Default Image
+			Load default image
 		</Button>
 		{#if $errors?._errors}
 			<span class="text-uchu-red">{$errors._errors[0]}</span>

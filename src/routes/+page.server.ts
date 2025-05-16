@@ -11,10 +11,11 @@ export const load = async () => {
 };
 
 const genAI = new GoogleGenAI({ apiKey: GEMINI_API });
-const prompt = `Take a look at the following image of a bookshelf and record your findings via a list made out of JSON objects. 
+const prompt = `Take a look at the following image of a bookshelf and record your findings via a list made out of JSON objects.
 These JSON objects contain the book author, title, and where to find the book via a bounding box. 
-The list should look as follows: [{author: "George Orwell", title: "1984", box: [ymin, xmin, ymax, xmax]}, ...]. 
-If you can not figure out the author or title, skip the book, and if you do not see any books in the image, return an empty list.`;
+The list should look as follows: [{author: "George Orwell", title: "1984", box: [ymin, xmin, ymax, xmax]}, ...]. With all text being in sentence case.
+If you can not figure out the author or title, skip the book, and if you do not see any books in the image, return an empty list. 
+Lastly, do not include any books other than the ones in the image.`;
 
 async function getBooks(file: File, model: string) {
 	const contents = [
@@ -31,7 +32,7 @@ async function getBooks(file: File, model: string) {
 		config: {
 			responseMimeType: "application/json",
 			systemInstruction:
-				"You are a librarian, and it is your job to find and record all the books inside an image of a bookshelf. You write down your findings in JSON and in sentence case.",
+				"You are a librarian, and it is your job to find and record all the books inside an image of a bookshelf.",
 			responseSchema: {
 				type: Type.ARRAY,
 				items: {
@@ -50,7 +51,7 @@ async function getBooks(file: File, model: string) {
 							items: {
 								type: Type.NUMBER,
 								description:
-									"The bounding box coordinates [ymin, xmin, ymax, xmax] normalized to 0-1000.",
+									"Bounding box coordinates in the format [ymin, xmin, ymax, xmax].",
 							},
 						},
 					},
