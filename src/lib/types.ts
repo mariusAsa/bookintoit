@@ -11,6 +11,7 @@ interface BookItem {
 		title?: string;
 		author_names: string[];
 		rating: number;
+		ratings_count: number;
 		isbns: string[];
 		slug?: string;
 	};

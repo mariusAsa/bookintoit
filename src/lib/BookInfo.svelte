@@ -33,7 +33,7 @@ async function searchBook(book: Book) {
                     <a class="max-w-xl w-full p-4 mb-4 border rounded-lg shadow-md border-uchu-dark-gray" href={info.document.slug ? `https://hardcover.app/books/${info.document.slug}` : "#"} target="_blank">
                         <h3 class="text-xl font-bold">{info.document.title || 'Unknown'}</h3>
                         <p class="text-sm text-uchu-dark-gray">{info.document.author_names?.join(', ') || 'Unknown'}</p>
-                        <p class="text-yellow-500">average rating★: {(info.document.rating || 0).toFixed(1)}</p>
+                        <p class="text-yellow-500">average rating★: {(info.document.rating || 0).toFixed(1)} from {info.document.ratings_count} reviews</p>
                         <p class="text-xs text-uchu-dark-gray">ISBN: {info.document.isbns[0] ?? ""}</p>
                     </a>
             {/each}
